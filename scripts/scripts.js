@@ -49,27 +49,37 @@ function createTableRow(address) {
     request.open('GET', address, true)
     request.onload = function() {
         var data = JSON.parse(this.response);
-        data.forEach(meteorite => {
-            var theYear ='';
-            if (meteorite.year == undefined) {
-                theYear = 'undefined';
-            } else {
-                theYear = meteorite.year.substring(0,4);
-            }
+        if (request.status=="400") {
             var tableRow = document.createElement('tr');
-            tableRow.classList.add('result');
-            tableRow.append(createRowCell(meteorite.name));
-            tableRow.append(createRowCell(meteorite.id));
-            tableRow.append(createRowCell(meteorite.nametype));
-            tableRow.append(createRowCell(meteorite.recclass));
-            tableRow.append(createRowCell(meteorite.mass));
-            tableRow.append(createRowCell(meteorite.fall));
-            tableRow.append(createRowCell(theYear));
-            tableRow.append(createRowCell(meteorite.reclat));
-            tableRow.append(createRowCell(meteorite.reclong));
+            var alert = document.createElement('p');
+            var alertMessage = "Your search returned no results. Please try again.";
+            alert.append(alertMessage);
+            tableRow.append(alert);
             var element = document.getElementById('search-table');
             element.appendChild(tableRow);
-        })
+        } else {
+            data.forEach(meteorite => {
+                var theYear ='';
+                if (meteorite.year == undefined) {
+                    theYear = 'undefined';
+                } else {
+                    theYear = meteorite.year.substring(0,4);
+                }
+                var tableRow = document.createElement('tr');
+                tableRow.classList.add('result');
+                tableRow.append(createRowCell(meteorite.name));
+                tableRow.append(createRowCell(meteorite.id));
+                tableRow.append(createRowCell(meteorite.nametype));
+                tableRow.append(createRowCell(meteorite.recclass));
+                tableRow.append(createRowCell(meteorite.mass));
+                tableRow.append(createRowCell(meteorite.fall));
+                tableRow.append(createRowCell(theYear));
+                tableRow.append(createRowCell(meteorite.reclat));
+                tableRow.append(createRowCell(meteorite.reclong));
+                var element = document.getElementById('search-table');
+                element.appendChild(tableRow);
+            })
+        }
     }
     request.send()
 }
@@ -81,11 +91,7 @@ $(document).ready(function() {
 
 // Variables
 
-var target, trigger, submitter, input, filter;
-
-target = document.getElementById('search-results');
-trigger = document.getElementById('search-container');
-submitter = document.getElementById('submit-button');
+var input, filter;
 
 function search() {
     input = document.getElementById('the-input').value;
@@ -93,17 +99,3 @@ function search() {
     createTableHeader();
     createTableRow(searchAddressStart + filter + searchAddressEnd);
 }
-
-// NASA Api Key uPSc3JaQ3mMVxhvfV4du7VVtADUnLD2PG11CRc7e
-
-// https://data.nasa.gov/resource/gh4g-9sfh.json?api_key=uPSc3JaQ3mMVxhvfV4du7VVtADUnLD2PG11CRc7e
-
-
-//function nextSmallerNumber(num) {
-//    num = num.toString().split('');
-//    console.log(num);
-
-
-// }
-
-// nextSmallerNumber(2017);
